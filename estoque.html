@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estoque</title>
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+    <h1>Estoque de Produtos</h1>
+
+    <!-- Campo de pesquisa no topo -->
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Digite o nome do produto...">
+        <button onclick="filtrarProdutos()">Pesquisar</button>
+    </div>
+
+    <!-- Tabela de produtos -->
+    <div id="product-list">
+        <!-- Produtos serão exibidos aqui dinamicamente -->
+    </div>
+
+    <!-- Botão Voltar ao Menu -->
+    <button type="button" onclick="window.location.href='index.html'">Voltar ao Menu</button>
+
+    <script>
+        // Função para carregar e exibir os produtos do estoque
+        function carregarProdutos() {
+            const produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = ''; // Limpa a lista
+
+            if (produtos.length === 0) {
+                const mensagem = document.createElement('p');
+                mensagem.textContent = "Nenhum produto no estoque.";
+                productList.appendChild(mensagem);
+            } else {
+                produtos.forEach(produto => {
+                    const divProduto = document.createElement('div');
+                    divProduto.classList.add('produto-item');
+
+                    // Verifica se o produto tem imagem
+                    if (produto.imagem && produto.imagem !== "") {
+                        const img = document.createElement('img');
+                        img.src = produto.imagem;
+                        img.alt = produto.nome;
+                        img.style.width = '100px'; // Define um tamanho para a imagem
+                        img.style.height = '100px'; // Define um tamanho para a imagem
+                        divProduto.appendChild(img);
+                    } else {
+                        // Caso não tenha imagem, exibe uma imagem padrão
+                        const imgPlaceholder = document.createElement('img');
+                        imgPlaceholder.src = 'imagens/placeholder.png'; // Substitua com o caminho de uma imagem padrão
+                        imgPlaceholder.alt = 'Imagem não disponível';
+                        imgPlaceholder.style.width = '100px';
+                        imgPlaceholder.style.height = '100px';
+                        divProduto.appendChild(imgPlaceholder);
+                    }
+
+                    // Exibe as informações do produto
+                    const info = document.createElement('p');
+                    info.textContent = `
+                        Nome: ${produto.nome} - 
+                        Quantidade: ${produto.quantidade} - 
+                        Validade: ${produto.validade} - 
+                        Entrada: ${produto.dataEntrada ? produto.dataEntrada : 'Data não informada'}
+                        ${produto.dataSaida ? `- Saída: ${produto.dataSaida}` : ''}
+                    `;
+                    divProduto.appendChild(info);
+                    productList.appendChild(divProduto);
+                });
+            }
+        }
+
+        // Função para filtrar os produtos com base na pesquisa
+        function filtrarProdutos() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = ''; // Limpa a lista
+
+            const produtosFiltrados = produtos.filter(produto => produto.nome.toLowerCase().includes(searchInput));
+
+            if (produtosFiltrados.length === 0) {
+                const mensagem = document.createElement('p');
+                mensagem.textContent = "Nenhum produto encontrado.";
+                productList.appendChild(mensagem);
+            } else {
+                produtosFiltrados.forEach(produto => {
+                    const divProduto = document.createElement('div');
+                    divProduto.classList.add('produto-item');
+
+                    // Verifica se o produto tem imagem
+                    if (produto.imagem && produto.imagem !== "") {
+                        const img = document.createElement('img');
+                        img.src = produto.imagem;
+                        img.alt = produto.nome;
+                        img.style.width = '100px'; // Define um tamanho para a imagem
+                        img.style.height = '100px'; // Define um tamanho para a imagem
+                        divProduto.appendChild(img);
+                    } else {
+                        // Caso não tenha imagem, exibe uma imagem padrão
+                        const imgPlaceholder = document.createElement('img');
+                        imgPlaceholder.src = 'imagens/placeholder.png'; // Substitua com o caminho de uma imagem padrão
+                        imgPlaceholder.alt = 'Imagem não disponível';
+                        imgPlaceholder.style.width = '100px';
+                        imgPlaceholder.style.height = '100px';
+                        divProduto.appendChild(imgPlaceholder);
+                    }
+
+                    // Exibe as informações do produto
+                    const info = document.createElement('p');
+                    info.textContent = `
+                        Nome: ${produto.nome} - 
+                        Quantidade: ${produto.quantidade} - 
+                        Validade: ${produto.validade} - 
+                        Entrada: ${produto.dataEntrada ? produto.dataEntrada : 'Data não informada'}
+                        ${produto.dataSaida ? `- Saída: ${produto.dataSaida}` : ''}
+                    `;
+                    divProduto.appendChild(info);
+                    productList.appendChild(divProduto);
+                });
+            }
+        }
+
+        // Chama a função para carregar os produtos ao iniciar a página
+        window.onload = carregarProdutos;
+    </script>
+</body>
+</html>
